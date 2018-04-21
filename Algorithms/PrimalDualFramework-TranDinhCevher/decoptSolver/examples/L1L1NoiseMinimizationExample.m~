@@ -1,0 +1,91 @@
+% Tests the decopt solver in the problem
+%
+%   minimize    ||x||_1 + ||x - w||_1
+%      x
+%   subject to  ||A*x - b|| <= sigma
+
+addpath('../');
+addpath('../functions');
+addpath('../proxs');
+
+% =========================================================================
+% Define experiments' parameters
+
+% Dimensions of matrix A: m x n
+n = 50;
+m = 30;
+
+% cardinality of x
+card_x = 10;
+
+% **********************************************
+% To generate prior information
+% number of components in common with x
+card_i_common = 5;
+
+% number of components not in the support of x
+card_i_rest   = 5;
+% **********************************************
+
+% Decopt parameters
+tolx        = 1e-5;
+maxiter     = 5000;
+verbosity   = -1;
+% =========================================================================
+
+
+% =========================================================================
+% Experiments
+
+
+% ************************************************************
+% Generate data
+
+% Generate x
+x_aux = [randn(card_x,1); zeros(n-card_x,1)];
+permutation_x = randperm(n);
+x = x_aux(permutation_x);
+
+% Generate w
+i_aux = [randn(card_i_rest,1); zeros(n-card_i_rest,1)];
+permutation_rest = randperm(n);
+i = i_aux(permutation_rest);
+vec_aux = [randn(card_i_common,1); zeros(n-card_i_common,1)];
+vec_perm = vec_aux(permutation_x);
+i = i + vec_perm;
+w = x + i;
+
+% Generate measurement matrix and vector of measurements
+A = randn(m,n);
+b = A*x;
+% ************************************************************
+
+% ************************************************************
+% decopt
+
+if MODE == 1
+    t_DECO_aux = cputime;
+    [x_DECO, output] = decoptL1L1(b, w, 1, 1, A, []);
+    t_DECO = cputime - t_DECO_aux;
+else
+    t_DECO_aux = cputime;
+    [x_DECO, output] = decoptL1L1(b, w, 1, 2, A_handler, AT_handler);
+    t_DECO = cputime - t_DECO_aux;
+end
+% ************************************************************
+
+% ************************************************************
+% Compare with CVX
+
+
+% First execute cvx
+cvx_begin quiet
+    cvx_precision high
+    variable x_cvx(n);
+    minimize(norm(x_cvx,1) + norm(x_cvx - w,1));
+    subject to
+        A*x_cvx == b;
+cvx_end
+x_opt = x_cvx;
+% =========================================================================
+
