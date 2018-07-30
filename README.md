@@ -13,7 +13,7 @@ This code replicates the experiments in
 and
 
 2. **[Dynamic Sparse State Estimation Using L1-L1 Minimization: Adaptive-Rate Measurement Bounds, Algorithms and Applications]( http://dx.doi.org/10.1109/ICASSP.2015.7178588 )**.  
-  J. F. C. Mota, N. Deligiannis, A. C. Sankaranarayanan, V. Cevher, M. R. D. Rodrigues. 
+  J. F. C. Mota, N. Deligiannis, A. C. Sankaranarayanan, V. Cevher, M. R. D. Rodrigues.  
   IEEE International Conference on Acoustics, Speech, and Signal Processing
   (ICASSP), Brisbane, 2015.  
   [link]( http://dx.doi.org/10.1109/ICASSP.2015.7178588 )
